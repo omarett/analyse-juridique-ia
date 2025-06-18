@@ -1,4 +1,4 @@
-mport os
+import os
 import random
 from io import BytesIO
 import base64
