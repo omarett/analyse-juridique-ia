@@ -1,11 +1,21 @@
+mport os
+import random
+from io import BytesIO
+import base64
+from PIL import Image
 import streamlit as st
 from transformers import pipeline
-import random
+
+# --- Fonction utilitaire pour convertir le logo en base64 ---
+def logo_to_base64(image):
+    buffered = BytesIO()
+    image.save(buffered, format="PNG")
+    return base64.b64encode(buffered.getvalue()).decode()
 
 # --- Configuration de la page ---
 st.set_page_config(page_title="Analyse Juridique IA", layout="wide")
 
-# --- CSS personnalisé (fond sombre dégradé, texte blanc gras, entrée grise, sidebar marron) ---
+# --- CSS personnalisé ---
 st.markdown("""
     <style>
     html, body, .stApp {
@@ -13,32 +23,24 @@ st.markdown("""
         font-family: 'Georgia', serif;
         color: #ffffff;
     }
-    h1, h2, h3, h4, p, .markdown-text-container {
+    h1, h2, h3, h4, p {
         color: #ffffff !important;
         font-weight: bold;
     }
-    textarea, input, .stTextInput>div>div>input {
+    textarea, input {
         background-color: #444444 !important;
         color: #ffffff !important;
         font-weight: bold !important;
         border: 1px solid #888888 !important;
         border-radius: 8px;
     }
-    .block-container {
-        padding-top: 2rem;
-        padding-bottom: 2rem;
-    }
-    /* Sidebar citation en marron */
     section[data-testid="stSidebar"] {
         background-color: #8d6e63 !important;
-        color: #ffffff !important;
-        font-weight: bold;
     }
     section[data-testid="stSidebar"] * {
         color: #ffffff !important;
         font-weight: bold !important;
     }
-    /* Bouton "Lancer l'analyse" en gris et plus grand */
     .stButton > button {
         background-color: #666666 !important;
         color: #ffffff !important;
@@ -47,7 +49,6 @@ st.markdown("""
         padding: 12px 24px !important;
         border-radius: 10px !important;
         border: none !important;
-        height: 50px !important;
         width: 100% !important;
     }
     .stButton > button:hover {
@@ -58,17 +59,28 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# --- Titre + logo ---
-st.markdown("""
-    <div style="text-align: center; margin-bottom: 30px;">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Logo_UH1.svg/2560px-Logo_UH1.svg.png" width="160"/>
-        <h1>MASTER DROIT ET SÉCURITÉ NUMÉRIQUE</h1>
-        <h2>⚖️ Analyse Automatique de Décisions Juridiques</h2>
-        <p style="font-size: 17px;">
-            Propulsée par l'IA – modèle <strong>BART MNLI</strong><br>
-            Analysez le domaine juridique d'un texte judiciaire (pénal, social...).
-        </p>
+# --- Logo centré ---
+dir_script = os.path.dirname(os.path.abspath(__file__))
+chemin_logo = os.path.join(dir_script, "logouh1.png")  # vérifie bien que ce fichier est dans le même dossier
+logo = Image.open(chemin_logo)
+
+st.markdown(
+    f"""
+    <div style="text-align: center;">
+        <img src="data:image/png;base64,{logo_to_base64(logo)}" width="120">
     </div>
+    """,
+    unsafe_allow_html=True
+)
+
+# --- Titre ---
+st.markdown("""
+    <h1 style="text-align: center;">MASTER DROIT ET SÉCURITÉ NUMÉRIQUE</h1>
+    <h2 style="text-align: center;">⚖️ Analyse Automatique de Décisions Juridiques</h2>
+    <p style="text-align: center; font-size: 17px;">
+        Propulsée par l'IA – modèle <strong>BART MNLI</strong><br>
+        Analysez le domaine juridique d'un texte judiciaire (pénal, social...).
+    </p>
 """, unsafe_allow_html=True)
 
 # --- Citation dans la sidebar ---
@@ -99,19 +111,17 @@ if st.button("🚀 Lancer l'analyse") and texte and etiquettes:
     top_label = result['labels'][0]
     top_score = result['scores'][0] * 100
 
-    # --- Affichage principal : catégorie dominante ---
     color = "🟢" if top_score > 75 else "🟠" if top_score > 50 else "🔴"
     bar_color = "#81c784" if top_score > 75 else "#ffb74d" if top_score > 50 else "#e57373"
 
     st.markdown("### 🏆 Branche juridique dominante")
     st.markdown(f"### {color} {top_label} — {top_score:.2f}%")
     st.markdown(f"""
-        <div style="background-color:{bar_color}; height:20px; border-radius:10px; width:{top_score}%; margin-bottom:20px;"></div>
-""", unsafe_allow_html=True)
+<div style="background-color:{bar_color}; height:20px; border-radius:10px; width:{top_score}%; margin-bottom:20px;"></div>
+    """, unsafe_allow_html=True)
 
     st.success(f"🔍 Conclusion : Ce texte relève majoritairement du {top_label} ({top_score:.2f}%)")
 
-    # --- Autres catégories ---
     st.markdown("---")
     st.markdown("#### 📊 Autres scores")
 
@@ -120,11 +130,9 @@ if st.button("🚀 Lancer l'analyse") and texte and etiquettes:
 
     for label, score in zip(autres_labels, autres_scores):
         pct = score * 100
-        bar_color = "#cccccc"
         st.markdown(f"**{label}** : {pct:.2f}%")
         st.markdown(f"""
-            <div style="background-color:{bar_color}; height:10px;
-border-radius:8px; width:{pct}%; margin-bottom:8px;"></div>
+            <div style="background-color:#cccccc; height:10px; border-radius:8px; width:{pct}%; margin-bottom:8px;"></div>
         """, unsafe_allow_html=True)
 
 # --- Pied de page ---
