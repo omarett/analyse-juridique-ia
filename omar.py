@@ -78,7 +78,6 @@ st.markdown("""
     <h1 style="text-align: center;">MASTER DROIT ET SÉCURITÉ NUMÉRIQUE</h1>
     <h2 style="text-align: center;">⚖️ Analyse Automatique de Décisions Juridiques</h2>
     <p style="text-align: center; font-size: 17px;">
-        Propulsée par l'IA – modèle <strong>BART MNLI</strong><br>
         Analysez le domaine juridique d'un texte judiciaire (pénal, social...).
     </p>
 """, unsafe_allow_html=True)
@@ -137,4 +136,4 @@ if st.button("🚀 Lancer l'analyse") and texte and etiquettes:
 
 # --- Pied de page ---
 st.markdown("---")
-st.caption("Université Hassan 1er – Analyse Juridique IA – © 2025 | Thème sombre mauve | Made with Streamlit")
+st.caption("Université Hassan 1er – Analyse Juridique IA – © 2025 | ")
