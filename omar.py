@@ -61,7 +61,7 @@ st.markdown("""
 
 # --- Logo centré ---
 dir_script = os.path.dirname(os.path.abspath(__file__))
-chemin_logo = os.path.join(dir_script, "logouh1.png")  # vérifie bien que ce fichier est dans le même dossier
+chemin_logo = os.path.join(dir_script, "logotr.png")  # vérifie bien que ce fichier est dans le même dossier
 logo = Image.open(chemin_logo)
 
 st.markdown(
