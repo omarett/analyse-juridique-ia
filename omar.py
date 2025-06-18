@@ -1,4 +1,4 @@
-mport os
+import os
 import random
 from io import BytesIO
 import base64
@@ -136,4 +136,4 @@ if st.button("🚀 Lancer l'analyse") and texte and etiquettes:
 
 # --- Pied de page ---
 st.markdown("---")
-st.caption("Université Hassan 1er – Analyse Juridique IA – © 2025 | ")
+st.caption("Université Hassan 1er – Analyse Juridique IA – © 2025 |")
